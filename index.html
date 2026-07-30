@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ELUCK LOGIN OTP</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box}
+    body{background:#0a0a0a; color:white; font-family:'Segoe UI', Arial; display:flex; justify-content:center; align-items:center; height:100vh; margin:0}
+    .box{background:#111; padding:30px; border-radius:16px; border:1px solid #00ff88; width:90%; max-width:380px; box-shadow:0 0 20px #00ff8822}
+    h2{color:#00ff88; text-align:center; margin:0 0 20px 0}
+    input,button{width:100%; padding:14px; margin:10px 0; border-radius:10px; border:1px solid #333; background:#1a1a1a; color:white; font-size:16px}
+    button{background:#00ff88; color:#000; font-weight:bold; cursor:pointer; border:none; transition:0.2s}
+    button:hover{background:#00dd70}
+    button:disabled{background:#333; color:#666; cursor:not-allowed}
+    #msg{margin-top:15px; text-align:center; font-size:14px; min-height:20px}
+    .success{color:#00ff88}
+    .error{color:#ff5555}
+  </style>
+</head>
+<body>
+<div class="box">
+  <h2>ELUCK</h2>
+  <div id="paso1">
+    <input id="correo" type="email" placeholder="Ingresa tu correo" required>
+    <button onclick="enviarOTP()">Enviar Código</button>
+  </div>
+
+  <div id="paso2" style="display:none">
+    <input id="otp" placeholder="Código de 6 dígitos" maxlength="6" inputmode="numeric">
+    <button onclick="verificarOTP()">Verificar y Entrar</button>
+    <button onclick="volver()" style="background:#333; color:white">Volver</button>
+  </div>
+  <div id="msg"></div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://gitaeifuhrncjmmjlwnf.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_DnAw2v25rXm_q2CJco9oWQ_LqS5x66y'
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let correoGlobal = "";
+
+async function enviarOTP(){
+  const btn = event.target;
+  correoGlobal = document.getElementById('correo').value;
+  if(!correoGlobal) return mostrarMsg("Ingresa un correo", "error");
+  
+  btn.disabled = true;
+  btn.innerText = "Enviando...";
+  
+  const { error } = await supabase.auth.signInWithOtp({ 
+    email: correoGlobal,
+    options: { shouldCreateUser: true } 
+  });
+  
+  btn.disabled = false;
+  btn.innerText = "Enviar Código";
+  
+  if(error) return mostrarMsg("Error: " + error.message, "error");
+  
+  document.getElementById('paso1').style.display = 'none';
+  document.getElementById('paso2').style.display = 'block';
+  mostrarMsg("📧 Código enviado a " + correoGlobal, "success");
+}
+
+async function verificarOTP(){
+  const otp = document.getElementById('otp').value;
+  if(otp.length < 6) return mostrarMsg("Ingresa los 6 dígitos", "error");
+  
+  const { data, error } = await supabase.auth.verifyOtp({ 
+    email: correoGlobal, 
+    token: otp, 
+    type: 'email' 
+  });
+  
+  if(error) return mostrarMsg("❌ Código incorrecto", "error");
+  
+  mostrarMsg("✅ Bienvenido " + data.user.email, "success");
+  // Aquí rediriges: setTimeout(() => window.location = 'dashboard.html', 1000)
+}
+
+function volver(){
+  document.getElementById('paso1').style.display = 'block';
+  document.getElementById('paso2').style.display = 'none';
+  document.getElementById('msg').innerText = '';
+}
+
+function mostrarMsg(texto, tipo){
+  const msg = document.getElementById('msg');
+  msg.innerText = texto;
+  msg.className = tipo;
+}
+</script>
+</body>
+</html>
