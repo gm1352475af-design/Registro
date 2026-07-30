@@ -1,68 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>ELUCK OTP DEBUG</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    body{background:#0a0a0a; color:white; font-family:Arial; display:flex; justify-content:center; align-items:center; height:100vh; margin:0}
-    .box{background:#111; padding:30px; border-radius:16px; border:1px solid #00ff88; width:360px}
-    input,button{width:100%; padding:14px; margin:10px 0; border-radius:10px; background:#1a1a1a; color:white; border:1px solid #333}
-    button{background:#00ff88; color:#000; font-weight:bold; cursor:pointer}
-    #msg{margin-top:10px; color:#ffaa00; font-size:13px}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELUCK Login</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+  body{background:#000; color:#fff; font-family:Arial; display:flex; justify-content:center; align-items:center; height:100vh; margin:0}
+  .box{background:#111; border:2px solid #00ff88; padding:30px; border-radius:15px; width:350px}
+  h1{color:#00ff88; text-align:center; margin-bottom:20px}
+  input{width:100%; padding:12px; margin:10px 0; background:#222; border:1px solid #444; border-radius:8px; color:#fff; font-size:16px; text-align:center}
+  button{width:100%; padding:12px; background:#00ff88; color:#000; border:none; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer}
+  .hidden{display:none}
+  #alerta{margin-top:10px; text-align:center; font-size:14px}
+</style>
 </head>
 <body>
+
 <div class="box">
-  <h2 style="color:#00ff88; text-align:center">ELUCK</h2>
-  
-  <div id="paso1">
-    <input id="correo" type="email" placeholder="tu@correo.com">
-    <button onclick="enviarOTP()">Enviar Código</button>
+  <h1>ELUCK</h1>
+
+  <div id="pantalla1">
+    <input id="correo" type="email" placeholder="Tu Gmail">
+    <button onclick="mandarCodigo()">Continuar</button>
   </div>
 
-  <div id="paso2" style="display:none">
-    <input id="otp" placeholder="Código de 6 dígitos">
-    <button onclick="verificarOTP()">Verificar</button>
+  <div id="pantalla2" class="hidden">
+    <p style="text-align:center; font-size:13px; color:#aaa">Código enviado a: <b id="correo2"></b></p>
+    <input id="codigo" type="number" placeholder="6 Dígitos" maxlength="6">
+    <button onclick="entrar()">Verificar</button>
+    <button onclick="volver()" style="background:#333; color:#fff; margin-top:8px">Volver</button>
   </div>
-  <div id="msg"></div>
+
+  <div id="alerta"></div>
 </div>
 
 <script>
-const SUPABASE_URL = 'https://gitaeifuhrncjmmjlwnf.supabase.co'
-const SUPABASE_KEY = 'sb_publishable_DnAw2v25rXm_q2CJco9oWQ_LqS5x66y'
+const URL = 'https://gitaeifuhrncjmmjlwnf.supabase.co'
+const KEY = 'sb_publishable_DnAw2v25rXm_q2CJco9oWQ_LqS5x66y'
+const supabase = window.supabase.createClient(URL, KEY)
 
-try {
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  document.getElementById('msg').innerText = "Supabase conectado ✅";
-} catch(e) {
-  document.getElementById('msg').innerText = "Error: " + e.message;
+let correoGuardado = "";
+
+function alerta(txt, color){
+  document.getElementById('alerta').innerText = txt;
+  document.getElementById('alerta').style.color = color;
 }
 
-let correoGlobal = "";
+async function mandarCodigo(){
+  const email = document.getElementById('correo').value;
+  if(!email) return alerta('Pon tu correo', 'red');
+  
+  alerta('Enviando...', '#00ff88');
+  
+  // Siempre cambia de pantalla aunque falle, para que veas el input
+  correoGuardado = email;
+  document.getElementById('correo2').innerText = email;
+  document.getElementById('pantalla1').classList.add('hidden');
+  document.getElementById('pantalla2').classList.remove('hidden');
 
-async function enviarOTP(){
-  correoGlobal = document.getElementById('correo').value;
-  document.getElementById('msg').innerText = "Enviando...";
+  const { error } = await supabase.auth.signInWithOtp({ 
+    email: email,
+    options: { shouldCreateUser: true }
+  });
   
-  const { error } = await supabase.auth.signInWithOtp({ email: correoGlobal });
-  
-  if(error){
-    document.getElementById('msg').innerText = "ERROR: " + error.message;
-    return;
+  if(error){ 
+    alerta('Error: ' + error.message, 'red'); 
+    return; 
   }
-  
-  // Si llegó aquí, esconde paso1 y muestra paso2
-  document.getElementById('paso1').style.display = 'none';
-  document.getElementById('paso2').style.display = 'block';
-  document.getElementById('msg').innerText = "Código enviado a " + correoGlobal;
+  alerta('Revisa tu correo. Código de 6 dígitos', '#00ff88');
 }
 
-async function verificarOTP(){
-  const otp = document.getElementById('otp').value;
-  const { data, error } = await supabase.auth.verifyOtp({ email: correoGlobal, token: otp, type: 'email' });
-  if(error) return document.getElementById('msg').innerText = "Código incorrecto";
-  document.getElementById('msg').innerText = "✅ Entraste: " + data.user.email;
+async function entrar(){
+  const otp = document.getElementById('codigo').value;
+  if(otp.length != 6) return alerta('Deben ser 6 dígitos', 'red');
+  
+  alerta('Verificando...', '#00ff88');
+  const { data, error } = await supabase.auth.verifyOtp({ 
+    email: correoGuardado, 
+    token: otp, 
+    type: 'email' 
+  });
+  
+  if(error){ 
+    alerta('Código incorrecto', 'red'); 
+    return; 
+  }
+  alerta('✅ Bienvenido: ' + data.user.email, '#00ff88');
+  // window.location.href = "inicio.html"
+}
+
+function volver(){
+  document.getElementById('pantalla2').classList.add('hidden');
+  document.getElementById('pantalla1').classList.remove('hidden');
+  alerta('', '');
 }
 </script>
 </body>
