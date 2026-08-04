@@ -456,33 +456,35 @@ function enviarMensajeGlobal(){
   input.value = "";
 }
 
-// CONTADOR CON FIREBASE - SUBE AL ENTRAR, BAJA AL SALIR AL INSTANTE
+// CONTADOR CON FIREBASE - ARREGLADO PARA GITHUB PAGES
 function escucharContador(){
-  const userId = localStorage.getItem('dola_device_id') || 'user_' + Date.now() + '_' + Math.random();
-  localStorage.setItem('dola_device_id', userId);
+  const userId = 'user_' + Date.now() + '_' + Math.random();
+  localStorage.setItem('dola_device_id', userId); // para no repetir si recargas
 
   const userOnlineRef = ref(db, 'online/' + userId);
   const contadorRef = ref(db, 'estadisticas/usuariosOnline');
 
-  // 1. Al entrar: sumarme
-  get(userOnlineRef).then(snap => {
-    if(!snap.exists()){
-      runTransaction(contadorRef, (c) => (c||0) + 1);
-      set(userOnlineRef, true);
-    }
-  });
+  // 1. AL ENTRAR: sumar +1 al toque
+  runTransaction(contadorRef, (c) => (c||0) + 1);
+  set(userOnlineRef, {time: Date.now()}); // marcar que estoy vivo
 
-  // 2. Al cerrar/recargar: borrarme al instante
+  // 2. Cada 3seg decir "sigo vivo" por si se congela
+  const vivo = setInterval(() => {
+    set(userOnlineRef, {time: Date.now()});
+  }, 3000);
+
+  // 3. AL SALIR: restar -1 al instante
   window.addEventListener('beforeunload', () => {
+    clearInterval(vivo);
     runTransaction(contadorRef, (c) => Math.max(0, (c||1) - 1));
     set(userOnlineRef, null);
   });
 
-  // 3. Por si se cae internet: firebase lo borra solo
+  // 4. SI SE CAE EL INTERNET: firebase lo borra solo en 5seg
   onDisconnect(userOnlineRef).remove();
   onDisconnect(contadorRef).transaction((c) => Math.max(0, (c||1) - 1));
 
-  // 4. Escuchar cambios y mostrar
+  // 5. ESCUCHAR Y MOSTRAR
   onValue(contadorRef, (snap) => {
     document.getElementById('contadorGlobal').innerText = snap.val() || 0;
   });
