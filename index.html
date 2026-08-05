@@ -474,7 +474,7 @@ function escucharGlobal(){
 
   // 4. MOSTRAR CONTADOR EN VIVO
   onValue(contadorRef, (snap) => {
-    document.getElementById('contadorGlobal').innerText = snap.val() || 0;
+document.getElementById('contadorGlobal').innerText = `👥 ${snap.val() || 0}`;
   });
 }
 
