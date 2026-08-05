@@ -6,7 +6,7 @@
 <style>
   body{background:#2F2F2F;color:#fff;font-family:sans-serif;margin:0}
   .top{display:flex;align-items:center;padding:12px 15px;background:#1a1a1a; justify-content: space-between;}
-  .x-btn{background:red;border:none;color:white;padding:5px 10px;border-radius:5px;cursor:pointer;font-weight:bold}
+  .x-btn{background:#ff3b30;border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:bold;font-size:14px}
 </style>
 </head>
 <body>
@@ -19,10 +19,12 @@
   <button class="x-btn" onclick="salirApp()">X Salir</button>
 </div>
 
+<!-- TU FIREBASE VIEJO - NO FALLA -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
+  // TU CONFIG
   var firebaseConfig = {
     apiKey: "AIzaSyD_OgFQRdkDVNSQPq48zNE6s1J7Y7I__js",
     authDomain: "pagos-yape-4968b.firebaseapp.com",
@@ -36,46 +38,36 @@
   firebase.initializeApp(firebaseConfig);
   var db = firebase.database();
   
+  // ID único por pestaña
+  var sessionId = 'sesion_' + Date.now() + '_' + Math.random().toString(36).substr(2,9);
+  var sesionRef = db.ref('sesiones/' + sessionId);
   var contRef = db.ref('estadisticas/usuariosOnline');
-  var sesionRef = db.ref('sesiones/' + Date.now() + '_' + Math.random());
 
-  var yaConto = false; // Para que no sume 2 veces
+  // 1. AL ENTRAR AL LINK = +1
+  sesionRef.set(true);
+  contRef.transaction(function(c){ return (c || 0) + 1; });
 
-  // 1. CUANDO DA CLICK AL LINK Y ENTRA A LA APP
-  function entrarApp(){
-    if(!yaConto){
-      sesionRef.set(true); // Creamos una sesion
-      contRef.transaction(function(c){ return (c || 0) + 1; }); // +1
-      yaConto = true;
-      console.log("Entro +1");
-    }
-  }
-
-  // 2. CUANDO DA CLICK EN LA X PARA SALIR
+  // 2. AL DAR CLICK EN X = -1
   function salirApp(){
-    sesionRef.remove(); // Borramos la sesion
-    contRef.transaction(function(c){ return Math.max(0, (c || 1) - 1); }); // -1
-    yaConto = false;
+    sesionRef.remove();
+    contRef.transaction(function(c){ return Math.max(0, (c || 1) - 1); });
     alert("Saliste de la app");
-    window.close(); // Intenta cerrar la pestaña
+    window.close(); // cierra pestaña si se puede
   }
 
-  // 3. SI CIERRA LA PESTAÑA SIN DAR X, TAMBIEN RESTA
+  // 3. SI CIERRA PESTAÑA SIN DAR X = -1 TAMBIEN
   window.addEventListener('beforeunload', function(){
-    if(yaConto){
-      sesionRef.remove();
-      contRef.transaction(function(c){ return Math.max(0, (c || 1) - 1); });
-    }
+    sesionRef.remove();
+    contRef.transaction(function(c){ return Math.max(0, (c || 1) - 1); });
   });
+  
+  // Por si se cae internet
+  sesionRef.onDisconnect().remove();
 
-  // 4. MOSTRAR EL CONTADOR
+  // 4. MOSTRAR CONTADOR
   contRef.on('value', function(snap){
     document.getElementById('contadorGlobal').innerText = snap.val() || 0;
   });
-
-  // EJECUTAR AL CARGAR LA PAGINA = "DIO CLICK AL LINK"
-  entrarApp();
-
 </script>
 
 </body>
