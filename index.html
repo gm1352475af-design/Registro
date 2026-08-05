@@ -3,197 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pagos Yape</title>
+<title>Sala de Visitas</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-body { background: #fff; color: #000; }
-.app { max-width: 500px; margin: 0 auto; background: #fff; min-height: 100vh; position: relative; padding-bottom: 70px; }
-.hidden { display: none!important; }
-.top-bar { display: flex; justify-content: space-between; gap: 15px; padding: 12px 20px; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 5; }
-.top-left { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; }
-.top-left svg { width: 18px; height: 18px; fill: #000; }
-.top-right { display: flex; gap: 15px; align-items: center; }
-.btn-outline { border: 1.5px solid #000; padding: 8px 20px; border-radius: 25px; background: #fff; font-weight: 600; font-size: 14px; cursor: pointer; }
-.btn-text { background: none; border: none; font-weight: 600; font-size: 14px; cursor: pointer; }
-.navbar { display: flex; justify-content: space-around; padding: 10px 0; border-bottom: 1px solid #eee; position: fixed; bottom: 0; width: 100%; max-width: 500px; background: #fff; z-index: 5; border-top: 1px solid #eee; }
-.nav-item { text-align: center; cursor: pointer; }
-.nav-item svg { width: 26px; height: 26px; fill: #000; }
-.nav-item span { font-size: 12px; display: block; margin-top: 3px; font-weight: 500; }
-.search-box { margin: 15px 20px; padding: 12px 15px; background: #f5f5f5; border-radius: 20px; display: flex; align-items: center; gap: 10px; }
-.search-box svg { width: 20px; height: 20px; fill: #888; }
-.search-box input { background: transparent; border: none; outline: none; width: 100%; font-size: 15px; }
-.card { margin: 15px 20px; padding: 15px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.card-left { display: flex; flex-direction: column; gap: 4px; }
-.card-left b { font-size: 16px; font-weight: 700; }
-.card-left small { font-size: 12px; color: #666; }
-.card-right { display: flex; align-items: center; gap: 12px; }
-.card-price { font-size: 18px; font-weight: 900; }
-.menu-btn { width: 32px; height: 32px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; }
-.participants { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #666; font-weight: 500; }
-.watermark { position: absolute; bottom: 80px; right: 15px; font-size: 11px; color: #ccc; font-weight: 600; }
-.header-back { display: flex; align-items: center; gap: 8px; padding: 15px 20px; font-weight: 500; cursor: pointer; }
-.create-container { padding: 20px; }
-.create-title { text-align: center; font-size: 28px; font-weight: 900; margin: 20px 0 40px; }
-.input-group { background: #f5f5f5; border-radius: 8px; padding: 12px 15px; display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
-.input-group svg { width: 18px; height: 18px; fill: #000; }
-.input-group input { background: transparent; border: none; outline: none; width: 100%; font-size: 15px; }
-.qr-btn { border: 2px dashed #ccc; padding: 8px 15px; border-radius: 8px; background: #fff; cursor: pointer; font-weight: 600; }
-.btn-row { display: flex; gap: 10px; margin-top: 30px; }
-.btn-black { background: #000; color: #fff; border: none; padding: 14px; border-radius: 25px; font-weight: 900; width: 55%; cursor: pointer; }
-.btn-black:disabled { background: #ccc; cursor: not-allowed; }
-.btn-gray { background: #f5f5f5; color: #000; border: none; padding: 14px; border-radius: 25px; font-weight: 700; width: 45%; cursor: pointer; }
-.error { color: #FF3B30; font-size: 13px; margin-top: -10px; margin-bottom: 10px; padding-left: 10px; }
-.alert { background:#FFF3CD; color:#856404; padding:12px; border-radius:8px; margin-bottom:15px; }
-.alert-danger { background:#F8D7DA; color:#721C24; padding:12px; border-radius:8px; margin-bottom:15px; }
-.sala-header { text-align: center; padding: 10px 20px 0; }
-.sala-total { font-size: 36px; font-weight: 900; transition: all 0.3s; margin-bottom: 5px; }
-.sala-contador { font-size: 14px; color: #666; margin-bottom: 15px; }
-.sala-top { display: flex; justify-content: center; align-items: center; gap: 12px; padding: 10px 20px; }
-.monto-select { border: 1.5px solid #000; padding: 10px 18px; border-radius: 10px; background: #fff; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 6px; position: relative; min-width: 90px; justify-content: center; }
-.monto-opciones { display: none; flex-direction: column; position: absolute; top: 45px; left: 0; background: #fff; border: 1.5px solid #000; border-radius: 10px; padding: 8px 0; z-index: 10; width: 100%; }
-.monto-opciones.show { display: flex; }
-.monto-opciones div { cursor: pointer; padding: 8px 16px; text-align: center; }
-.monto-opciones div:hover { background: #f5f5f5; }
-.btn-pagar { background: #000; color: #fff; border: none; padding: 10px 30px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 15px; }
-.btn-pagar:disabled { background: #ccc; color: #999; cursor: not-allowed; }
-.tabs { display: flex; padding: 0 20px; border-bottom: 2px solid #eee; }
-.tab { flex: 1; text-align: center; padding: 12px; font-weight: 600; }
-.tab.active { border-bottom: 3px solid #00C853; }
-.qr-container { text-align: center; padding: 20px; }
-.qr-container img { width: 250px; height: 250px; border-radius: 12px; object-fit: contain; background: #fff; }
-.user-list { padding: 0 20px; }
-.user-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; animation: slideIn 0.4s; font-size: 15px; }
-.user-item span:first-child { font-weight: 600; }
-.user-item span:last-child { color: #00C853; font-weight: 700; }
-.chat-box { margin: 15px 20px; border: 1.5px solid #000; padding: 12px; border-radius: 6px; height: 250px; overflow-y: auto; background: #fff; }
-.chat-msg { margin-bottom: 10px; word-break: break-word; font-size: 14px; }
-.chat-msg b { color: #00C853; }
-.chat-input { display: flex; padding: 10px 20px 20px; gap: 10px; align-items: center; position: sticky; bottom: 70px; background: #fff; }
-.chat-input input { flex: 1; background: #f5f5f5; border: none; padding: 12px 15px; border-radius: 20px; outline: none; }
-.send-btn { background: #000; color: #fff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
-.notif { display: flex; padding: 15px 20px; gap: 12px; animation: slideIn 0.4s; border-bottom: 1px solid #eee; }
-.avatar { width: 40px; height: 40px; background: #ddd; border-radius: 50%; position: relative; }
-.avatar-dot { width: 12px; height: 12px; background: #00C853; border: 2px solid #fff; border-radius: 50%; position: absolute; bottom: 0; right: 0; }
-@keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+body { background: #f5f5f5; }
+.app { max-width: 500px; margin: 0 auto; background: #fff; min-height: 100vh; text-align: center; padding: 20px; }
+.header { background: #00C853; color: #fff; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+.header h1 { font-size: 24px; margin-bottom: 10px; }
+.contador { font-size: 48px; font-weight: 900; }
+.sub { font-size: 14px; opacity: 0.9; }
+.box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
+.btn { background: #00C853; color: #fff; border: none; padding: 15px 30px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; width: 100%; }
+.btn:hover { background: #00a843; }
+.lista { text-align: left; }
+.usuario { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+.online { color: #00C853; font-weight: 700; }
 </style>
 </head>
 <body>
 <div class="app">
-
-  <div id="screen1">
-    <div class="top-bar">
-      <div class="top-left">
-        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-      <span id="contadorGlobal">👥 0</span>
-      </div>
-      <div class="top-right">
-        <button class="btn-outline" onclick="goTo(3)">Registrate</button>
-        <button class="btn-text">Acceder</button>
-      </div>
-    </div>
-    <div class="navbar">
-      <div class="nav-item" onclick="goTo(1)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></div>
-      <div class="nav-item" onclick="goTo(4)"><svg viewBox="0 0 24 24"><path d="M17 2H7C5.9 2 5 2.9 5 4v16l7-3 7 3V4c0-1.1-.9-2-2-2z"/></svg><span>Chats</span></div>
-      <div class="nav-item" onclick="goTo(3)"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></div>
-      <div class="nav-item" onclick="goTo(5)"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><span>Notifications</span></div>
-    </div>
-    <div class="search-box">
-      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-      <input id="searchInput" type="text" placeholder="Buscar por sala/username/pagador..." onkeyup="filtrarSalas()">
-    </div>
-    <div id="salasList"></div>
-    
+  <div class="header">
+    <h1>👥 Sala de Visitas</h1>
+    <div class="contador" id="contador">0</div>
+    <div class="sub">Personas conectadas ahora</div>
   </div>
 
-  <div id="screen2" class="hidden">
-    <div class="header-back" onclick="salirSala()">← Volver</div>
-    <div class="sala-header">
-      <div class="sala-total" id="total">S/0</div>
-      <div class="sala-contador" id="contadorPagos">0/5 pagos</div>
-      <div id="alertaLimiteDia"></div>
-    </div>
-    <div class="sala-top">
-      <div class="monto-select" onclick="toggleMontos()">
-        <span id="montoSeleccionado">s/1</span> ▼
-        <div class="monto-opciones" id="montoOpciones">
-          <div onclick="seleccionarMonto(1)">s/1</div>
-          <div onclick="seleccionarMonto(2)">s/2</div>
-          <div onclick="seleccionarMonto(3)">s/3</div>
-          <div onclick="seleccionarMonto(4)">s/4</div>
-          <div onclick="seleccionarMonto(5)">s/5</div>
-        </div>
-      </div>
-      <button class="btn-pagar" id="btnPagar" onclick="pagar()">Pagar</button>
-    </div>
-    <div class="tabs">
-      <div class="tab active">Ganancias</div>
-      <div class="tab">Pagos</div>
-    </div>
-    <div class="qr-container" id="qrContainer">
-      <img id="qrSala" src="" alt="QR Yape">
-    </div>
-    <div class="user-list" id="userList"></div>
-    <div class="chat-box" id="chatBox"></div>
-    <div class="chat-input">
-      <input id="chatInput" type="text" placeholder="Escribe un mensaje..." onkeypress="if(event.key==='Enter') enviarMensajeSala()">
-      <div class="send-btn" onclick="enviarMensajeSala()">➤</div>
-    </div>
+  <div class="box">
+    <h3 style="margin-bottom: 15px;">Tu nombre</h3>
+    <input id="nombreInput" placeholder="Escribe tu nombre" style="width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; margin-bottom: 15px;">
+    <button class="btn" onclick="entrar()">ENTRAR A LA SALA</button>
   </div>
 
-  <div id="screen3" class="hidden">
-    <div class="header-back" onclick="goTo(1)">← Volver</div>
-    <div class="create-container">
-      <h1 class="create-title">Crear Sala</h1>
-      <div id="alertLimite"></div>
-      <div class="input-group">
-        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        <input id="inputUsername" placeholder="Tu Username único" onkeyup="validarUsername()">
-      </div>
-      <div id="errorUsername" class="error"></div>
-      <div class="input-group">
-        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-        <input id="inputNombre" placeholder="Tu Nombre">
-      </div>
-      <div class="input-group">
-        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2.9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        <input id="inputQR" placeholder="Selecciona tu QR" readonly>
-        <button class="qr-btn" onclick="document.getElementById('qrUpload').click()">Subir</button>
-        <input type="file" id="qrUpload" accept="image/*" style="display:none" onchange="cargarQR(event)">
-      </div>
-      <img id="previewQR" style="display:none; width:100px; height:100px; margin:10px auto; border-radius:8px; object-fit:contain;">
-      <div class="btn-row">
-        <button class="btn-black" id="btnCrear" onclick="crearSala()">CREAR SALA</button>
-        <button class="btn-gray" onclick="goTo(1)">CANCELAR</button>
-      </div>
-    
-    </div>
-  </div>
-
-  <div id="screen4" class="hidden">
-    <div class="header-back" onclick="goTo(1)">← Volver</div>
-    <div class="chat-box" id="chatGlobalBox"></div>
-    <div class="chat-input">
-      <input id="chatGlobalInput" type="text" placeholder="Chat global..." onkeypress="if(event.key==='Enter') enviarMensajeGlobal()">
-      <div class="send-btn" onclick="enviarMensajeGlobal()">➤</div>
-    </div>
-  </div>
-
-  <div id="screen5" class="hidden">
-    <div class="header-back" onclick="goTo(1)">← Volver</div>
-    <div id="notifList">
-      <div class="notif">
-        <div class="avatar"><div class="avatar-dot"></div></div>
-        <div><div style="display: flex; justify-content: space-between;"><b>Sistema</b> <span style="color: #aaa; font-size: 12px;">now</span></div><span style="color: #555;">App iniciada</span></div>
-      </div>
-    </div>
+  <div class="box lista">
+    <h3 style="margin-bottom: 10px;">Conectados ahora:</h3>
+    <div id="listaUsuarios"></div>
   </div>
 
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, push, runTransaction, onDisconnect } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { getDatabase, ref, set, onValue, runTransaction, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 // TU CONFIG DE FIREBASE
 const firebaseConfig = {
@@ -209,316 +59,58 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let salas = {};
-let salaActivaId = null;
-let montoActual = 1;
-let usuarioActual = localStorage.getItem('dola_user') || "";
-let totalDia = 0;
-let fechaTotal = new Date().toDateString();
-let yaConto = false; // para no duplicar
+let deviceId = localStorage.getItem('device_id') || 'user_' + Date.now();
+localStorage.setItem('device_id', deviceId);
+let miNombre = "";
 
-window.onload = () => {
-  revisarDia();
-  escucharSalas();
-  escucharGlobal();
-  escucharContador(); // <-- AQUI ESTA EL CONTADOR
-  verificarLimiteSala();
-}
+const contadorRef = ref(db, 'estadisticas/usuariosOnline');
+const onlineRef = ref(db, 'online/' + deviceId);
+const usuariosRef = ref(db, 'usuariosConectados');
 
-function revisarDia(){
-  let hoy = new Date().toDateString();
-  if(hoy !== fechaTotal){
-    totalDia = 0; fechaTotal = hoy;
-    set(ref(db, 'estadisticas'), {totalDia: 0, fechaTotal: hoy});
-  }
-}
+// 1. MOSTRAR CONTADOR EN VIVO
+onValue(contadorRef, (snap) => {
+  document.getElementById('contador').innerText = snap.val() || 0;
+});
 
-function goTo(n) {
-  revisarDia();
-  document.querySelectorAll('#screen1, #screen2, #screen3, #screen4, #screen5').forEach(s => s.classList.add('hidden'));
-  document.getElementById('screen' + n).classList.remove('hidden');
-  if(n == 1) renderSalas();
-  if(n == 3) verificarLimiteSala();
-}
-
-function salirSala(){
-  if(salaActivaId){
-    runTransaction(ref(db, 'salas/' + salaActivaId + '/participantes'), (p) => Math.max(0,(p||1)-1));
-    if(usuarioActual) set(ref(db, 'salas/' + salaActivaId + '/enSala/' + usuarioActual), null);
-  }
-  salaActivaId = null; goTo(1);
-}
-
-function toggleMontos(){ document.getElementById('montoOpciones').classList.toggle('show'); }
-function seleccionarMonto(m){ montoActual = m; document.getElementById('montoSeleccionado').innerText = 's/' + m; document.getElementById('montoOpciones').classList.remove('show'); }
-document.addEventListener('click', function(e){ if(!e.target.closest('.monto-select')){ document.getElementById('montoOpciones').classList.remove('show'); } })
-
-function verificarLimiteSala(){
-  let alertDiv = document.getElementById('alertLimite');
-  let btnCrear = document.getElementById('btnCrear');
-  if(usuarioActual !== ""){
-    alertDiv.innerHTML = `<div class="alert">Ya tienes una cuenta: @${usuarioActual}. Solo puedes tener 1 sala.</div>`;
-    btnCrear.innerText = "YA TIENES CUENTA"; btnCrear.disabled = true;
-  } else { alertDiv.innerHTML = ""; btnCrear.innerText = "CREAR SALA"; btnCrear.disabled = false; }
-}
-
-function cargarQR(event){
-  const file = event.target.files[0];
-  if(file){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      document.getElementById('inputQR').value = file.name;
-      document.getElementById('inputQR').dataset.src = e.target.result;
-      document.getElementById('previewQR').src = e.target.result;
-      document.getElementById('previewQR').style.display = 'block';
-    }
-    reader.readAsDataURL(file);
-  }
-}
-
-async function validarUsername(){
-  let username = document.getElementById('inputUsername').value.trim();
-  let errorDiv = document.getElementById('errorUsername');
-  let btnCrear = document.getElementById('btnCrear');
-  if(username == ""){ errorDiv.innerText = ""; btnCrear.disabled = false; return; }
-  const snap = await get(ref(db, 'usernames/' + username));
-  if(snap.exists()){ errorDiv.innerText = "Este username ya existe. Elige otro."; btnCrear.disabled = true; }
-  else { errorDiv.innerText = ""; btnCrear.disabled = false; }
-}
-
-async function crearSala(){
-  let username = document.getElementById('inputUsername').value.trim();
-  let nombre = document.getElementById('inputNombre').value.trim();
-  let qr = document.getElementById('inputQR').dataset.src;
-  if(username == "" || nombre == "" || !qr){ alert("Completa Username, Nombre y sube tu QR"); return; }
-  if(usuarioActual !== ""){ alert("Ya tienes una cuenta. Solo puedes crear 1 sala"); return; }
-
-  const snap = await get(ref(db, 'usernames/' + username));
-  if(snap.exists()){ alert("Este username ya está en uso"); return; }
-
-  usuarioActual = username;
-  localStorage.setItem('dola_user', username);
-  let id = Date.now();
-  let nuevaSala = { 
-    id, username, nombre, qr, total: 0, pagos: 0, participantes: 0, 
-    enSala: {}, pagadores: {}, chat: {0: `<div class="chat-msg"><b>Sistema:</b> Sala creada por @${username}</div>`} 
-  };
-
-  await set(ref(db, 'salas/' + id), nuevaSala);
-  await set(ref(db, 'usernames/' + username), id);
-  await set(ref(db, 'misSalas/' + username), id);
-
-  agregarNotif("Sala Creada", `Creaste la sala: ${nombre} @${username}`);
-  goTo(1);
-}
-
-function filtrarSalas(){
-  let texto = document.getElementById('searchInput').value.toLowerCase();
-  let cards = document.querySelectorAll('.card');
-  cards.forEach(card => {
-    let nombre = card.querySelector('b').innerText.toLowerCase();
-    let username = card.dataset.username.toLowerCase();
-    let coincide = nombre.includes(texto) || username.includes(texto);
-    card.style.display = coincide ? 'block' : 'none';
+// 2. MOSTRAR LISTA DE USUARIOS
+onValue(usuariosRef, (snap) => {
+  const usuarios = snap.val() || {};
+  let html = "";
+  Object.values(usuarios).forEach(u => {
+    html += `<div class="usuario"><span>${u.nombre}</span> <span class="online">● Online</span></div>`;
   });
+  document.getElementById('listaUsuarios').innerHTML = html || "<div style='color:#999;'>Nadie conectado</div>";
+});
+
+function entrar(){
+  miNombre = document.getElementById('nombreInput').value.trim();
+  if(miNombre == ""){ alert("Pon tu nombre"); return; }
+
+  // SUMAR +1 AL CONTADOR
+  runTransaction(contadorRef, (count) => (count || 0) + 1);
+  
+  // GUARDAR QUE ESTOY ONLINE
+  set(onlineRef, true);
+  set(ref(db, 'usuariosConectados/' + deviceId), { nombre: miNombre, hora: Date.now() });
+
+  // CUANDO CIERRA LA PAGINA: RESTAR -1
+  window.addEventListener('beforeunload', salir);
+  
+  // SI SE CAE EL INTERNET: RESTAR -1 AUTOMATICO
+  onDisconnect(onlineRef).remove();
+  onDisconnect(ref(db, 'usuariosConectados/' + deviceId)).remove();
+  onDisconnect(contadorRef).transaction((count) => Math.max(0, (count || 1) - 1));
+
+  document.querySelector('.btn').innerText = "YA ESTAS EN LA SALA";
+  document.querySelector('.btn').disabled = true;
+  document.getElementById('nombreInput').disabled = true;
 }
 
-function escucharSalas(){
-  onValue(ref(db, 'salas'), (snap) => {
-    salas = snap.val() || {};
-    renderSalas();
-  });
+function salir(){
+  runTransaction(contadorRef, (count) => Math.max(0, (count || 1) - 1));
+  remove(onlineRef);
+  remove(ref(db, 'usuariosConectados/' + deviceId));
 }
-
-function renderSalas(){
-  let lista = document.getElementById('salasList');
-  lista.innerHTML = "";
-  if(Object.keys(salas).length == 0){
-    lista.innerHTML = `<div style="text-align:center; padding:40px; color:#999;">No hay salas creadas aún</div>`;
-    return;
-  }
-  Object.values(salas).forEach(sala => {
-    lista.innerHTML += `
-      <div class="card" data-username="${sala.username}" data-id="${sala.id}" onclick="entrarSala(${sala.id})">
-        <div class="card-header">
-          <div class="card-left">
-            <b>${sala.nombre}</b>
-            <small>@${sala.username}</small>
-            <div class="participants">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#666"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-              ${sala.participantes} participantes
-            </div>
-          </div>
-          <div class="card-right">
-            <div class="card-price">S/${sala.total}</div>
-            <div class="menu-btn">⋮</div>
-          </div>
-        </div>
-      </div>
-    `;
-  });
-}
-
-function entrarSala(id){
-  revisarDia();
-  if(usuarioActual == ""){ alert("Primero crea tu cuenta en Registrate"); goTo(3); return; }
-  salaActivaId = id;
-
-  runTransaction(ref(db, 'salas/' + id + '/participantes'), (p) => (p||0) + 1);
-  set(ref(db, 'salas/' + id + '/enSala/' + usuarioActual), true);
-
-  onValue(ref(db, 'salas/' + id), (snap) => {
-    let sala = snap.val();
-    if(!sala) return;
-    document.getElementById('total').innerText = `S/${sala.total}`;
-    document.getElementById('contadorPagos').innerText = `${sala.pagos}/5 pagos`;
-    document.getElementById('qrSala').src = sala.qr;
-
-    get(ref(db, 'estadisticas')).then(estSnap => {
-      let est = estSnap.val() || {totalDia: 0};
-      totalDia = est.totalDia || 0;
-      let btnPagar = document.getElementById('btnPagar');
-      let alertaDiv = document.getElementById('alertaLimiteDia');
-
-      if(totalDia >= 200){
-        alertaDiv.innerHTML = `<div class="alert-danger">Límite diario de S/200 alcanzado. Se reinicia mañana.</div>`;
-        btnPagar.disabled = true; btnPagar.innerText = "LÍMITE DIARIO";
-      } else if(sala.pagos >= 5){
-        alertaDiv.innerHTML = `<small style="color:#666;">Acumulado hoy: S/${totalDia} / S/200</small>`;
-        document.getElementById('qrContainer').style.display = 'none';
-        btnPagar.disabled = true; btnPagar.innerText = "COMPLETADO";
-      } else {
-        alertaDiv.innerHTML = `<small style="color:#666;">Acumulado hoy: S/${totalDia} / S/200</small>`;
-        document.getElementById('qrContainer').style.display = 'block';
-        btnPagar.disabled = false; btnPagar.innerText = "Pagar";
-      }
-    });
-
-    let userList = document.getElementById('userList');
-    userList.innerHTML = "";
-    let pagadores = Object.values(sala.pagadores || {}).reverse();
-    pagadores.forEach(p => {
-      userList.innerHTML += `<div class="user-item"><span>${p.nombre}</span><span>S/${p.monto.toFixed(2)} →</span></div>`;
-    });
-
-    document.getElementById('chatBox').innerHTML = Object.values(sala.chat || {}).join('');
-    document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
-  });
-  goTo(2);
-}
-
-function pagar() {
-  if(!salaActivaId ||!usuarioActual) return;
-  get(ref(db, 'estadisticas')).then(estSnap => {
-    let est = estSnap.val() || {totalDia: 0};
-    if(est.totalDia >= 200){ alert("Ya alcanzaste el límite de S/200 por hoy"); return; }
-
-    let montoAPagar = montoActual;
-    if(est.totalDia + montoActual > 200) montoAPagar = 200 - est.totalDia;
-
-    runTransaction(ref(db, 'salas/' + salaActivaId), (sala) => {
-      if(!sala || sala.pagos >= 5) return;
-      sala.total += montoAPagar;
-      sala.pagos += 1;
-      sala.pagadores = sala.pagadores || {};
-      sala.pagadores[usuarioActual] = {nombre: usuarioActual, monto: (sala.pagadores[usuarioActual]?.monto || 0) + montoAPagar};
-      sala.chat = sala.chat || {};
-      sala.chat[Date.now()] = `<div class="chat-msg"><b>@${usuarioActual}:</b> Pagó S/${montoAPagar}</div>`;
-      return sala;
-    });
-
-    runTransaction(ref(db, 'estadisticas/totalDia'), (t) => (t||0) + montoAPagar);
-    agregarNotif("Nuevo Pago", `@${usuarioActual} pagó S/${montoAPagar}`);
-  });
-}
-
-function enviarMensajeSala(){
-  let input = document.getElementById('chatInput');
-  if(input.value.trim() == "" ||!salaActivaId) return;
-  let msg = `<div class="chat-msg"><b>@${usuarioActual}:</b> ${input.value}</div>`;
-  push(ref(db, 'salas/' + salaActivaId + '/chat'), msg);
-  input.value = "";
-}
-
-function escucharGlobal(){
-  onValue(ref(db, 'chatGlobal'), (snap) => {
-    let msgs = snap.val() || {};
-    document.getElementById('chatGlobalBox').innerHTML = Object.values(msgs).join('');
-    document.getElementById('chatGlobalBox').scrollTop = document.getElementById('chatGlobalBox').scrollHeight;
-  });
-}
- 
-
-function enviarMensajeGlobal(){
-  if(usuarioActual == ""){ alert("Primero crea tu cuenta"); goTo(3); return; }
-  let input = document.getElementById('chatGlobalInput');
-  if(input.value.trim() == "") return;
-  let msg = `<div class="chat-msg"><b>@${usuarioActual}:</b> ${input.value}</div>`;
-  push(ref(db, 'chatGlobal'), msg);
-  input.value = "";
-}
-function escucharContador(){
-  const deviceId = localStorage.getItem('dola_device_id') || 'dev_' + Date.now() + '_' + Math.random().toString(36).substr(2,9);
-  localStorage.setItem('dola_device_id', deviceId);
-
-  const userOnlineRef = ref(db, 'online/' + deviceId);
-  const contadorRef = ref(db, 'estadisticas/usuariosOnline');
-
-  // AL ENTRAR: sumar
-  get(userOnlineRef).then(snap => {
-    if(!snap.exists()){
-      runTransaction(contadorRef, (c) => (c||0) + 1);
-      set(userOnlineRef, true);
-    }
-  });
-
-  // AL SALIR: restar
-  window.addEventListener('beforeunload', () => {
-    runTransaction(contadorRef, (c) => Math.max(0, (c||1) - 1));
-    set(userOnlineRef, null);
-  });
-
-  onDisconnect(userOnlineRef).remove();
-  onDisconnect(contadorRef).transaction((c) => Math.max(0, (c||1) - 1));
-
-  // MOSTRAR EN VIVO
-  onValue(contadorRef, (snap) => {
-    const count = snap.val() || 0;
-    document.getElementById('contadorGlobal').innerText = `👥 ${count}`;
-    console.log("Contador actualizado:", count); // para debug
-  });
-}
-function agregarNotif(titulo, texto){
-  let notifList = document.getElementById('notifList');
-  let hora = new Date().toLocaleTimeString('es-PE', {hour: '2-digit', minute:'2-digit'});
-  notifList.innerHTML = `
-    <div class="notif">
-      <div class="avatar"><div class="avatar-dot"></div></div>
-      <div>
-        <div style="display: flex; justify-content: space-between;">
-          <b>${titulo}</b>
-          <span style="color: #aaa; font-size: 12px;">${hora}</span>
-        </div>
-        <span style="color: #555;">${texto}</span>
-      </div>
-    </div>
-  ` + notifList.innerHTML;
-}
-
-// Hacer funciones globales para que los onclick funcionen
-window.goTo = goTo;
-window.salirSala = salirSala;
-window.toggleMontos = toggleMontos;
-window.seleccionarMonto = seleccionarMonto;
-window.validarUsername = validarUsername;
-window.crearSala = crearSala;
-window.filtrarSalas = filtrarSalas;
-window.entrarSala = entrarSala;
-window.pagar = pagar;
-window.enviarMensajeSala = enviarMensajeSala;
-window.enviarMensajeGlobal = enviarMensajeGlobal;
-window.cargarQR = cargarQR;
-
 </script>
 </body>
 </html>
