@@ -85,7 +85,7 @@ body { background: #fff; color: #000; }
     <div class="top-bar">
       <div class="top-left">
         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        <span id="contadorGlobal">0</span>
+      <span id="contadorGlobal">👥 0</span>
       </div>
       <div class="top-right">
         <button class="btn-outline" onclick="goTo(3)">Registrate</button>
@@ -447,36 +447,7 @@ function escucharGlobal(){
     document.getElementById('chatGlobalBox').scrollTop = document.getElementById('chatGlobalBox').scrollHeight;
   });
 }
- function escucharContador(){
-  const deviceId = localStorage.getItem('dola_device_id') || 'dev_' + Date.now() + '_' + Math.random().toString(36).substr(2,9);
-  localStorage.setItem('dola_device_id', deviceId);
-
-  const userOnlineRef = ref(db, 'online/' + deviceId);
-  const contadorRef = ref(db, 'estadisticas/usuariosOnline');
-
-  // 1. AL ENTRAR: Si no existe este device, suma +1
-  get(userOnlineRef).then(snap => {
-    if(!snap.exists()){
-      runTransaction(contadorRef, (c) => (c||0) + 1);
-      set(userOnlineRef, true);
-    }
-  });
-
-  // 2. SI CIERRA PESTAÑA/NAVEGADOR = -1
-  window.addEventListener('beforeunload', () => {
-    runTransaction(contadorRef, (c) => Math.max(0, (c||1) - 1));
-    set(userOnlineRef, null);
-  });
-
-  // 3. RESPALDO POR SI SE CAE INTERNET = -1
-  onDisconnect(userOnlineRef).remove();
-  onDisconnect(contadorRef).transaction((c) => Math.max(0, (c||1) - 1));
-
-  // 4. MOSTRAR CONTADOR EN VIVO
-  onValue(contadorRef, (snap) => {
-document.getElementById('contadorGlobal').innerText = `👥 ${snap.val() || 0}`;
-  });
-}
+ 
 
 function enviarMensajeGlobal(){
   if(usuarioActual == ""){ alert("Primero crea tu cuenta"); goTo(3); return; }
@@ -486,7 +457,37 @@ function enviarMensajeGlobal(){
   push(ref(db, 'chatGlobal'), msg);
   input.value = "";
 }
+function escucharContador(){
+  const deviceId = localStorage.getItem('dola_device_id') || 'dev_' + Date.now() + '_' + Math.random().toString(36).substr(2,9);
+  localStorage.setItem('dola_device_id', deviceId);
 
+  const userOnlineRef = ref(db, 'online/' + deviceId);
+  const contadorRef = ref(db, 'estadisticas/usuariosOnline');
+
+  // AL ENTRAR: sumar
+  get(userOnlineRef).then(snap => {
+    if(!snap.exists()){
+      runTransaction(contadorRef, (c) => (c||0) + 1);
+      set(userOnlineRef, true);
+    }
+  });
+
+  // AL SALIR: restar
+  window.addEventListener('beforeunload', () => {
+    runTransaction(contadorRef, (c) => Math.max(0, (c||1) - 1));
+    set(userOnlineRef, null);
+  });
+
+  onDisconnect(userOnlineRef).remove();
+  onDisconnect(contadorRef).transaction((c) => Math.max(0, (c||1) - 1));
+
+  // MOSTRAR EN VIVO
+  onValue(contadorRef, (snap) => {
+    const count = snap.val() || 0;
+    document.getElementById('contadorGlobal').innerText = `👥 ${count}`;
+    console.log("Contador actualizado:", count); // para debug
+  });
+}
 function agregarNotif(titulo, texto){
   let notifList = document.getElementById('notifList');
   let hora = new Date().toLocaleTimeString('es-PE', {hour: '2-digit', minute:'2-digit'});
